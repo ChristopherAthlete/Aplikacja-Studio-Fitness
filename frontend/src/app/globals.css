@@ -182,6 +182,36 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    font-size: 14px;
+    line-height: 1.5;
     min-height: 100vh;
+  }
+
+  /* Nagłówki */
+
+  h1 {
+    @apply text-[28px] leading-9 font-semibold tracking-tight;
+  }
+
+  h2 {
+    @apply text-xl leading-7 font-semibold tracking-tight;
+  }
+
+  h3 {
+    @apply text-base font-semibold;
+  }
+
+  /* Tabele shadcn/ui */
+
+  [data-slot="table"] {
+    @apply text-sm;
+  }
+
+  [data-slot="table-head"] {
+    @apply text-[13px] font-medium;
+  }
+
+  [data-slot="table-cell"] {
+    @apply text-sm;
   }
 }

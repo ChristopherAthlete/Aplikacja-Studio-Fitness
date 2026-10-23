@@ -1,17 +1,23 @@
 import logging
+from typing import Annotated
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from sqlalchemy import text
+from sqlalchemy import select, text
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
 
-from .database import engine
+from .database import engine, get_db
+from .models import Klient
+from .schemas import KlientCreate, KlientResponse
 
 logger = logging.getLogger(__name__)
 
 # Inicjalizacja aplikacji
 app = FastAPI(title="Studio Fitness B API", version="0.1.0")
+
+DbSession = Annotated[Session, Depends(get_db)]
 
 # Połączenie z frontendem Next.js
 app.add_middleware(
@@ -88,3 +94,29 @@ def get_test_messages():
         )
 
         return [dict(row) for row in result.mappings()]
+
+
+@app.post("/api/clients", response_model=KlientResponse, status_code=201)
+def create_client(data: KlientCreate, db: DbSession):
+    klient = Klient(**data.model_dump())
+
+    try:
+        db.add(klient)
+        db.commit()
+        db.refresh(klient)
+
+    except SQLAlchemyError:
+        db.rollback()
+        logger.exception("Bład podczas dodawania klienta")
+        raise HTTPException(status_code=500, detail="Nie udało się dodać klienta")
+
+    return klient
+
+
+@app.get("/api/clients", response_model=list[KlientResponse])
+def get_clients(db: DbSession):
+    statement = select(Klient).order_by(Klient.id)
+
+    clients = db.scalars(statement).all()
+
+    return clients
