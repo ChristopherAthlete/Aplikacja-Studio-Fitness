@@ -1,0 +1,10 @@
+CREATE SCHEMA IF NOT EXISTS test_connection;
+
+CREATE TABLE IF NOT EXISTS test_connection.messages (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    message TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE test_connection.messages
+ENABLE ROW LEVEL SECURITY;
