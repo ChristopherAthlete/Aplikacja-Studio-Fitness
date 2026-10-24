@@ -48,7 +48,7 @@ export function ClientDetailsDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-h-[85dvh] w-[calc(100%-2rem)] gap-0 overflow-y-auto p-0 sm:max-w-[680px]">
+            <DialogContent className="max-h-[85dvh] w-[calc(100%-2rem)] gap-0 overflow-y-auto p-0 sm:max-w-170">
 
                 {/* Nagłówek klienta */}
                 <DialogHeader className="flex flex-row items-center gap-4 border-b px-6 py-5 pr-14 text-left">
