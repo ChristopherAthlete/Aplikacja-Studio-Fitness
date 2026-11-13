@@ -1,6 +1,7 @@
 import pytest
 from app.database import engine, get_db
 from app.main import app
+from app.models import Base
 from fastapi.testclient import TestClient
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -14,13 +15,17 @@ def test_api_client():
         transaction = connection.begin()
 
         try:
-            # Sprawdzenie istnienia tabeli testowej
-            table_exists = connection.execute(
-                text("SELECT to_regclass('fitness_test.klienci')")
-            ).scalar_one()
+            # Sprawdzenie istnienia tabel testowych
+            # (tworzy je database/002_fitness_test_schema.sql)
+            for table in Base.metadata.tables.values():
+                test_table = f"fitness_test.{table.name}"
 
-            if table_exists is None:
-                raise RuntimeError("Brak tabeli fitness_test.klienci")
+                table_exists = connection.execute(
+                    text("SELECT to_regclass(:name)"), {"name": test_table}
+                ).scalar_one()
+
+                if table_exists is None:
+                    raise RuntimeError(f"Brak tabeli {test_table}")
 
             def override_get_db():
                 with Session(

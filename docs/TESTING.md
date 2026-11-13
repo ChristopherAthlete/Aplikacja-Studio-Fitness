@@ -27,10 +27,19 @@ Np. `tests/test_clients_integration.py`, z fixture'em `test_api_client` z `conft
 
 - `schema_translate_map` przekierowuje `fitness` na `fitness_test`,
 - każdy test działa w transakcji wycofywanej na końcu,
-- wymagają istniejącej tabeli `fitness_test.klienci`.
+- wymagają istniejących tabel w schemacie `fitness_test` (fixture sprawdza
+  wszystkie tabele z `Base.metadata` i zgłasza brakującą).
+
+### Przygotowanie schematu `fitness_test`
+
+Uruchom `database/002_fitness_test_schema.sql` w Supabase (SQL Editor).
+Skrypt jest idempotentny, więc po dodaniu nowych tabel wystarczy go
+uruchomić ponownie.
+
+Przy każdej nowej tabeli lub zmianie struktury w `fitness` trzeba
+zaktualizować ten skrypt, żeby `fitness_test` odpowiadał migracjom.
 
 ## TODO
 
-- Jak przygotować schemat `fitness_test`
 - Testy frontendu
 - Uruchamianie testów w CI
